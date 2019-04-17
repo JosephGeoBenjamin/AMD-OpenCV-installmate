@@ -1,4 +1,5 @@
 #!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
 
 WORKDIR=$(pwd)
 echo "##--- OpenCV-hip Installer ---" >> ~/.bashrc
@@ -7,6 +8,8 @@ echo "##--- OpenCV-hip Installer ---" >> ~/.bashrc
 sudo apt-get update && sudo apt-get install -y --no-install-recommends curl && \
   curl -sL http://repo.radeon.com/rocm/apt/debian/rocm.gpg.key | apt-key add - && \
   sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/debian/ xenial main > /etc/apt/sources.list.d/rocm.list'
+
+## Rocm-dkms must be previously installed
 
 ## Basic Libraries
 sudo apt-get update && sudo apt-get -y upgrade &&
@@ -46,7 +49,7 @@ sudo apt -y install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
 sudo apt-get update && sudo apt-get -y upgrade
 
 ## exports Hip libs
-echo "export LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:\$LD_LIBRARY_PATH"  >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:$LD_LIBRARY_PATH"  >> ~/.bashrc
 echo "export PATH=/opt/rocm/bin/:$PATH" >> ~/.bashrc
 source ~/.bashrc
 
@@ -60,20 +63,12 @@ source ~/.bashrc
 mkdir -p $WORKDIR/rocm-lib-install
 
 ### Tested commits For 2.2.0
-HIP_COMMIT=59c54da4f01758581d087bba94e476e39eed7c14
+HIP_COMMIT=59c54da4f01758581d087bba94e476e39eed7c14 # not used
 ROCBLAS_COMMIT=2333ed495b84f763c39b71d1f70152d23556bebf
 HIPBLAS_COMMIT=ad4fb4c61e14cc482581502f8f66e6941d98c312
 ROCFFT_COMMIT=273c18b2abc1a3e1e4ea6283178254d2760d2997
 ROCRAND_COMMIT=7278524ea37f449795fdafcd0bf5307f61f06ba9
 ROCTHRUST_COMMIT=2f23ffb3932f303d910cad824b327c11893f0d68 #2.3 commit
-
-# ### Tested commits For 2.3.0
-# HIP_COMMIT=59c54da4f01758581d087bba94e476e39eed7c14
-# ROCBLAS_COMMIT=2333ed495b84f763c39b71d1f70152d23556bebf
-# HIPBLAS_COMMIT=ad4fb4c61e14cc482581502f8f66e6941d98c312
-# ROCFFT_COMMIT=273c18b2abc1a3e1e4ea6283178254d2760d2997
-# ROCRAND_COMMIT=7278524ea37f449795fdafcd0bf5307f61f06ba9
-# ROCTHRUST_COMMIT=2f23ffb3932f303d910cad824b327c11893f0d68
 
 ###Modified hip for OpenCV
 cd $WORKDIR/rocm-lib-install
@@ -83,7 +78,7 @@ cd $WORKDIR
 
 cd $WORKDIR/rocm-lib-install
 git clone https://github.com/ROCmSoftwarePlatform/rocBLAS.git
-cd ./rocBLAS && git checkout $ROCBLAS_COMMIT && ./install.sh -idc
+cd ./rocBLAS && git checkout $ROCBLAS_COMMIT && sudo ./install.sh -idc
 cd $WORKDIR
 
 cd $WORKDIR/rocm-lib-install
@@ -114,7 +109,7 @@ git clone https://github.com/JosephGeoBenjamin/opencv_contrib-hip.git
 git clone https://github.com/opencv/opencv_extra.git
 
 echo "OPENCV_TEST_DATA_PATH=$WORKDIR/opencv_extra/testdata/"  >> ~/.bashrc
-echo "LD_LIBRARY_PATH=$WORKDIR/opencv-hip/build/lib:LD_LIBRARY_PATH"  >> ~/.bashrc
+echo "LD_LIBRARY_PATH=$WORKDIR/opencv-hip/build/lib:$LD_LIBRARY_PATH"  >> ~/.bashrc
 source ~/.bashrc
 echo "##--- OpenCV-hip end ---" >> ~/.bashrc
 
@@ -124,7 +119,7 @@ cd $WORKDIR/opencv-hip && mkdir -p build && cd build && cmake \
         -DCV_DISABLE_OPTIMIZATION=ON  \
         -DCV_ENABLE_INTRINSICS=OFF \
         -DWITH_HIP=ON \
-        -DBUILD_LIST=core,highgui,cudev,cudabgsegm,cudalegacy,cudaimgproc,cudaarithm,cudafilters,cudawarping,cudastereo,cudafeatures2d,ts \
+        -DBUILD_LIST=core,highgui,cudev,cudabgsegm,cudalegacy,cudaimgproc,cudaarithm,cudafilters,cudawarping,cudastereo,cudafeatures2d,cudaoptflow,ts \
         -DOPENCV_EXTRA_MODULES_PATH=$WORKDIR/opencv_contrib-hip/modules \
         ../
 
@@ -138,5 +133,6 @@ make -j12 opencv_test_cudafilters
 make -j12 opencv_test_cudabgsegm
 make -j12 opencv_test_cudafeatures2d
 make -j12 opencv_test_cudastereo
+#make -j12 opencv_test_cudaoptflow
 
 cd $WORK_DIR

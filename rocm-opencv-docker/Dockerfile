@@ -29,8 +29,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
 
 # Rocm Libraries
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    rocm-dev=2.2.31 \
-    rocm-libs=2.2.31 \
+    rocm-dev \
+    rocm-libs \
     && apt-get -f install
 
 #OpenCV dependencies
@@ -51,7 +51,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     x264 v4l-utils \
     libprotobuf-dev protobuf-compiler \
     libgoogle-glog-dev libgflags-dev \
-    libgphoto2-dev libeigen3-dev libhdf5-dev \
+    libgphoto2-dev libeigen3-dev libhdf5-dev
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get clean
 
@@ -87,7 +87,7 @@ RUN cd ~/rocm-lib-install && \
 #OpenCV repos
 RUN git clone https://github.com/JosephGeoBenjamin/opencv-hip.git
 RUN git clone https://github.com/JosephGeoBenjamin/opencv_contrib-hip.git
-RUN git clone https://github.com/opencv/opencv_extra.git
+#RUN git clone https://github.com/opencv/opencv_extra.git
 ENV OPENCV_TEST_DATA_PATH "/home/rocm-user/opencv_extra/testdata/"
 ENV LD_LIBRARY_PATH "/home/rocm-user/opencv-hip/build/lib:LD_LIBRARY_PATH"
 
