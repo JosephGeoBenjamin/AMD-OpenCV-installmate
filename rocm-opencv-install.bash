@@ -119,7 +119,7 @@ cd $WORKDIR/opencv-hip && mkdir -p build && cd build && cmake \
         -DCV_DISABLE_OPTIMIZATION=ON  \
         -DCV_ENABLE_INTRINSICS=OFF \
         -DWITH_HIP=ON \
-        -DBUILD_LIST=core,highgui,cudev,cudabgsegm,cudalegacy,cudaimgproc,cudaarithm,cudafilters,cudawarping,cudastereo,cudafeatures2d,cudaoptflow,ts \
+        -DBUILD_LIST=core,highgui,cudev,cudabgsegm,cudalegacy,cudaimgproc,cudaarithm,cudafilters,cudawarping,cudastereo,cudafeatures2d,cudaoptflow,cudaobjdetect,cudacodec,ts \
         -DOPENCV_EXTRA_MODULES_PATH=$WORKDIR/opencv_contrib-hip/modules \
         ../
 
@@ -133,6 +133,8 @@ make -j12 opencv_test_cudafilters
 make -j12 opencv_test_cudabgsegm
 make -j12 opencv_test_cudafeatures2d
 make -j12 opencv_test_cudastereo
+make -j12 opencv_test_cudaobjdetect
+make -j12 opencv_test_cudacodec
 #make -j12 opencv_test_cudaoptflow
 
 cd $WORK_DIR
