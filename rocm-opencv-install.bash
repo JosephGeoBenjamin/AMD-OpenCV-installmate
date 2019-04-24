@@ -138,3 +138,4 @@ make -j12 opencv_test_cudacodec
 #make -j12 opencv_test_cudaoptflow
 
 cd $WORK_DIR
+sudo chmod 777 $WORK_DIR -R
