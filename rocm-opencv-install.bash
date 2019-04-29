@@ -63,7 +63,7 @@ source ~/.bashrc
 mkdir -p $WORKDIR/rocm-lib-install
 
 ### Tested commits For 2.2.0
-HIP_COMMIT=59c54da4f01758581d087bba94e476e39eed7c14 # not used
+HIP_COMMIT=59c54da4f01758581d087bba94e476e39eed7c14
 ROCBLAS_COMMIT=2333ed495b84f763c39b71d1f70152d23556bebf
 HIPBLAS_COMMIT=ad4fb4c61e14cc482581502f8f66e6941d98c312
 ROCFFT_COMMIT=273c18b2abc1a3e1e4ea6283178254d2760d2997
@@ -72,9 +72,12 @@ ROCTHRUST_COMMIT=2f23ffb3932f303d910cad824b327c11893f0d68 #2.3 commit
 
 ###Modified hip for OpenCV
 cd $WORKDIR/rocm-lib-install
-git clone https://github.com/JosephGeoBenjamin/HIP-forOpenCV.git
-cd ./HIP-forOpenCV && mkdir -p build && cd build && cmake ../ && make -j12 && sudo make install
+git clone https://github.com/ROCm-Developer-Tools/HIP.git
+cd ./HIP && git checkout $HIP_COMMIT && git apply $WORKDIR/hip-opencv.patch
+mkdir -p build && cd build && cmake ../ && make -j12 && sudo make install
 cd $WORKDIR
+###Refer to https://github.com/JosephGeoBenjamin/HIP-forOpenCV.git
+
 
 cd $WORKDIR/rocm-lib-install
 git clone https://github.com/ROCmSoftwarePlatform/rocBLAS.git
